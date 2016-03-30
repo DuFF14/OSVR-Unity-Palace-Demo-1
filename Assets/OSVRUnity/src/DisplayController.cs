@@ -308,6 +308,7 @@ namespace OSVR
                 {
                     SetupDisplay();
                 }
+               
             }
 
             //helper method for updating the client context

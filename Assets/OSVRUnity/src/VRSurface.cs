@@ -46,7 +46,7 @@ namespace OSVR
             public RenderTexture RenderToTexture;
             private Color[] m_Pixels;
             private GCHandle m_PixelsHandle;
-            private Shader basicShader;
+            public Shader basicShader;
 
             public Camera Camera { get { return _camera; } set { _camera = value; } }
             public uint SurfaceIndex { get { return _surfaceIndex; } set { _surfaceIndex = value; } }
@@ -153,11 +153,28 @@ namespace OSVR
                 RenderTexture.active = RenderToTexture;
             }
 
+            public bool renderWithShader = true;
+
+            void FixedUpdate()
+            {
+                if(Input.GetKeyDown(KeyCode.Space))
+                {
+                    renderWithShader = !renderWithShader;
+                }
+            }
             //Render the camera
             public void Render()
             {
                 Camera.targetTexture = RenderToTexture;
-                Camera.Render();
+                if(renderWithShader)
+                {
+                    Camera.RenderWithShader(basicShader, "");
+                }
+                else
+                {
+                    Camera.Render();
+                }
+
             }
 
             public void ClearRenderTarget()
