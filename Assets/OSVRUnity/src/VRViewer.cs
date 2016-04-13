@@ -59,12 +59,28 @@ namespace OSVR
             private bool _hmdConnectionError = false;
             private Rect _emptyViewport = new Rect(0, 0, 0, 0);
 			private IEnumerator _endOfFrameCoroutine;
-
             #endregion
+
+            public SteamVR_CameraMask cameraMask;
+            public bool renderWithCameraMask = true;
 
             void Awake()
             {
                 Init();
+                
+            }
+
+            void Start()
+            {
+                if (renderWithCameraMask)
+                {
+                    cameraMask = FindObjectOfType<SteamVR_CameraMask>();
+                    cameraMask.SetMesh();
+                }
+                else
+                {
+                    Destroy(cameraMask.gameObject);
+                }
             }
 
             void Init()
@@ -230,6 +246,27 @@ namespace OSVR
                 DisplayController.UpdateClient();
             }
 
+            void Update()
+            {
+                if(Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    renderWithCameraMask = !renderWithCameraMask;
+                    if(!renderWithCameraMask)
+                    {
+                        cameraMask.Clear();
+                    }
+                }
+
+                if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    cameraMask.SetMesh("leftEyeMesh");                   
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    cameraMask.SetMesh("bigMesh");
+                }
+            }
+
             // Culling determines which objects are visible to the camera. OnPreCull is called just before this process.
             // This gets called because we have a camera component, but we disable the camera here so it doesn't render.
             // We have the "dummy" camera so existing Unity game code can refer to a MainCamera object.
@@ -240,7 +277,13 @@ namespace OSVR
                 //leave the preview camera enabled if there is no display config
                 _camera.enabled = !DisplayController.CheckDisplayStartup();
 
+                if (renderWithCameraMask)
+                    cameraMask.SetMesh();
+
                 DoRendering();
+
+                //if (renderWithCameraMask && cameraMask != null)
+                    //cameraMask.Clear();
 
                 // Flag that we disabled the camera
                 _disabledCamera = true;

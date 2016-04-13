@@ -187,12 +187,11 @@ namespace OSVR
 
                 //create scene objects 
                 CreateHeadAndEyes();
-
                 //create RenderBuffers in RenderManager
-                if(UseRenderManager && RenderManager != null)
+                if (UseRenderManager && RenderManager != null)
                 {
                     RenderManager.ConstructBuffers();
-                }                          
+                }
                 SetRenderParams();
             }
 

@@ -149,10 +149,26 @@ namespace OSVR
             {
                 RenderTexture.active = RenderToTexture;
             }
-
+            public LayerMask leftMask, rightMask;
             //Render the camera
             public void Render()
             {
+                // Update position to keep from getting culled
+                if(Eye.Viewer.cameraMask != null && Eye.Viewer.renderWithCameraMask)
+                    Eye.Viewer.cameraMask.transform.position = this.transform.position;
+
+                int cullingMask = Camera.cullingMask;
+                if (Eye.EyeIndex == 0)
+                {
+                    Camera.cullingMask &= ~rightMask;
+                    Camera.cullingMask |= leftMask;
+                }
+                else
+                {
+                    Camera.cullingMask &= ~leftMask;
+                    Camera.cullingMask |= rightMask;
+                }
+
                 Camera.targetTexture = RenderToTexture;
                 Camera.Render();
             }
