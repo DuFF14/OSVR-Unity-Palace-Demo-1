@@ -23,9 +23,9 @@ Here is an [Android apk](https://github.com/OSVR/OSVR-Unity-Palace-Demo/releases
 See the [Android branch README](https://github.com/OSVR/OSVR-Unity-Palace-Demo/blob/androidPalace/README.md) for more information.
 
 ##Recent Changes
-### v0.6.8 
-> (April 6, 2016)
+### v0.6.16.4
+> (March 9, 2017)
 
-- Update to OSVRUnity v0.6.8.
-- Changed to mobile/diffuse shader for most surfaces.
-- Removed fire particles and excessive lighting.
+- Update to OSVRUnity v0.6.16.3 (build 612)
+- Fixes random crash on some systems
+- Re-baked Occlusion maps
