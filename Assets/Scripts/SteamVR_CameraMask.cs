@@ -7,7 +7,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Rendering;
-
+using System;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class SteamVR_CameraMask : MonoBehaviour
@@ -50,13 +50,61 @@ public class SteamVR_CameraMask : MonoBehaviour
     public void SetMesh()
     {
         meshFilter.mesh = eyeMesh == null ? Resources.Load<Mesh>("leftEyeMesh") : eyeMesh;
+        UpdateMeshScale();
 
     }
 
     public void SetMesh(string meshResourceName)
     {
         meshFilter.mesh = eyeMesh = Resources.Load<Mesh>(meshResourceName);
+        UpdateMeshScale();
 
+    }
+
+    public float ScaleX = 1.0f;
+    public float ScaleY = 1.0f;
+    public float ScaleZ = 1.0f;
+    public bool RecalculateNormals = false;
+    private Vector3[] _baseVertices;
+    private bool testMode = true;
+    public float testSpeed = 100f;
+    public void Update()
+    {
+        if(testMode)
+        {
+            ScaleX -= Time.deltaTime / testSpeed;
+            ScaleY -= Time.deltaTime / testSpeed;
+            ScaleZ -= Time.deltaTime / testSpeed;
+
+        }
+        UpdateMeshScale();
+    }
+
+    private void UpdateMeshScale()
+    {
+        var mesh = GetComponent<MeshFilter>().mesh;
+        if (_baseVertices == null)
+            _baseVertices = mesh.vertices;
+        var vertices = new Vector3[_baseVertices.Length];
+        for (var i = 0; i < vertices.Length; i++)
+        {
+            var vertex = _baseVertices[i];
+            vertex.x = vertex.x * ScaleX;
+            vertex.y = vertex.y * ScaleY;
+            vertex.z = vertex.z * ScaleZ;
+            vertices[i] = vertex;
+        }
+        mesh.vertices = vertices;
+        if (RecalculateNormals)
+            mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+    }
+
+    public void SetMeshScale(float x, float y, float z)
+    {
+        ScaleX = x;
+        ScaleY = y;
+        ScaleZ = z;
     }
 
     /* void Update()
